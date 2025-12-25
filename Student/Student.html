@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Timetable Module</title>
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- INTERNAL CSS -->
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+
+        .login-box {
+            max-width: 350px;
+            margin: auto;
+            margin-top: 120px;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        table {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================= LOGIN PAGE ================= -->
+<div class="login-box card p-4 shadow" id="loginPage">
+    <h4 class="text-center mb-3">Student Login</h4>
+
+    <input type="text" class="form-control mb-3" placeholder="Student ID">
+    <input type="password" class="form-control mb-3" placeholder="Password">
+
+    <!-- NO AUTHENTICATION -->
+    <button class="btn btn-primary w-100" onclick="openDashboard()">Login</button>
+</div>
+
+<!-- ================= DASHBOARD PAGE ================= -->
+<div class="container dashboard" id="dashboardPage">
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h2>Student Dashboard</h2>
+        <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Department & Semester Selection -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <select id="deptSelect" class="form-select">
+                <option value="">Select Department</option>
+                <option>CSE</option>
+                <option>ECE</option>
+                <option>ME</option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <select id="semSelect" class="form-select">
+                <option value="">Select Semester</option>
+                <option>1</option>
+                <option>3</option>
+                <option>5</option>
+                <option>7</option>
+            </select>
+        </div>
+    </div>
+
+    <button class="btn btn-primary mt-3" onclick="loadTimetable()">View Timetable</button>
+
+    <!-- Timetable Table -->
+    <table class="table table-bordered mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Subject</th>
+                <th>Faculty</th>
+            </tr>
+        </thead>
+        <tbody id="timetableBody">
+            <!-- Timetable rows will appear here -->
+        </tbody>
+    </table>
+
+    <button class="btn btn-success" onclick="window.print()">Print / Download</button>
+</div>
+
+<!-- ================= INTERNAL JAVASCRIPT ================= -->
+<script>
+    function openDashboard() {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("dashboardPage").style.display = "block";
+    }
+
+    function logout() {
+        document.getElementById("dashboardPage").style.display = "none";
+        document.getElementById("loginPage").style.display = "block";
+    }
+
+    function loadTimetable() {
+        let dept = document.getElementById("deptSelect").value;
+        let sem = document.getElementById("semSelect").value;
+        let body = document.getElementById("timetableBody");
+
+        body.innerHTML = "";
+
+        if (dept === "" || sem === "") {
+            alert("Please select department and semester");
+            return;
+        }
+
+        // SAMPLE STATIC DATA (Future DB Connection)
+        let timetable = [
+            { dept: "CSE", sem: "5", day: "Monday", time: "9-10", subject: "DBMS", faculty: "Dr. A" },
+            { dept: "CSE", sem: "5", day: "Tuesday", time: "10-11", subject: "OS", faculty: "Dr. B" },
+            { dept: "ECE", sem: "3", day: "Monday", time: "9-10", subject: "Signals", faculty: "Dr. C" }
+        ];
+
+        timetable.forEach(item => {
+            if (item.dept === dept && item.sem === sem) {
+                body.innerHTML += `
+                    <tr>
+                        <td>${item.day}</td>
+                        <td>${item.time}</td>
+                        <td>${item.subject}</td>
+                        <td>${item.faculty}</td>
+                    </tr>
+                `;
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

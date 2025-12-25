@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Timetable Generator</title>
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- INTERNAL CSS -->
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+
+        .login-box {
+            max-width: 380px;
+            margin: auto;
+            margin-top: 120px;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        table {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================= ADMIN LOGIN PAGE ================= -->
+<div class="login-box card p-4 shadow" id="loginPage">
+    <h4 class="text-center mb-3">Admin Login</h4>
+
+    <input type="text" class="form-control mb-3" placeholder="Admin Username">
+    <input type="password" class="form-control mb-3" placeholder="Password">
+
+    <!-- NO AUTHENTICATION -->
+    <button class="btn btn-dark w-100" onclick="openDashboard()">Login</button>
+</div>
+
+<!-- ================= ADMIN DASHBOARD ================= -->
+<div class="container dashboard" id="dashboardPage">
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h2>Admin Dashboard</h2>
+        <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- ===== TIMETABLE FORM ===== -->
+    <div class="card p-4 mt-4 shadow">
+        <h5>Generate Timetable</h5>
+
+        <div class="row g-3 mt-2">
+            <div class="col-md-2">
+                <input type="text" id="dept" class="form-control" placeholder="Department">
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="semester" class="form-control" placeholder="Semester">
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="day" class="form-control" placeholder="Day">
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="time" class="form-control" placeholder="Time Slot">
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="subject" class="form-control" placeholder="Subject">
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="faculty" class="form-control" placeholder="Faculty">
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button class="btn btn-primary" onclick="addEntry()">Add Entry</button>
+            <button class="btn btn-warning" onclick="resetTimetable()">Reset Timetable</button>
+        </div>
+    </div>
+
+    <!-- ===== TIMETABLE PREVIEW ===== -->
+    <h5 class="mt-4">Timetable Preview</h5>
+
+    <table class="table table-bordered mt-2">
+        <thead class="table-dark">
+            <tr>
+                <th>Department</th>
+                <th>Semester</th>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Subject</th>
+                <th>Faculty</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="timetableBody"></tbody>
+    </table>
+</div>
+
+<!-- ================= INTERNAL JAVASCRIPT ================= -->
+<script>
+    let timetable = [];
+
+    function openDashboard() {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("dashboardPage").style.display = "block";
+    }
+
+    function logout() {
+        document.getElementById("dashboardPage").style.display = "none";
+        document.getElementById("loginPage").style.display = "block";
+    }
+
+    function addEntry() {
+        let entry = {
+            dept: dept.value,
+            sem: semester.value,
+            day: day.value,
+            time: time.value,
+            subject: subject.value,
+            faculty: faculty.value
+        };
+
+        if (
+            entry.dept === "" || entry.sem === "" ||
+            entry.day === "" || entry.time === "" ||
+            entry.subject === "" || entry.faculty === ""
+        ) {
+            alert("Please fill all fields");
+            return;
+        }
+
+        timetable.push(entry);
+        displayTable();
+        clearInputs();
+    }
+
+    function displayTable() {
+        let body = document.getElementById("timetableBody");
+        body.innerHTML = "";
+
+        timetable.forEach((item, index) => {
+            body.innerHTML += `
+                <tr>
+                    <td>${item.dept}</td>
+                    <td>${item.sem}</td>
+                    <td>${item.day}</td>
+                    <td>${item.time}</td>
+                    <td>${item.subject}</td>
+                    <td>${item.faculty}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteEntry(${index})">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function deleteEntry(index) {
+        timetable.splice(index, 1);
+        displayTable();
+    }
+
+    function resetTimetable() {
+        timetable = [];
+        displayTable();
+    }
+
+    function clearInputs() {
+        dept.value = "";
+        semester.value = "";
+        day.value = "";
+        time.value = "";
+        subject.value = "";
+        faculty.value = "";
+    }
+</script>
+
+</body>
+</html>
